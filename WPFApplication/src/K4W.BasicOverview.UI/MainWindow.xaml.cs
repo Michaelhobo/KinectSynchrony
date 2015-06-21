@@ -130,12 +130,6 @@ namespace K4W.BasicOverview.UI
             // Initialize Camera
             InitializeCamera();
 
-            // Initialize Depth
-            InitializeDepth();
-
-            // Initialize Infrared
-            InitializeInfrared();
-
             // Initialize Body
             IntializeBody();
         }
@@ -164,60 +158,6 @@ namespace K4W.BasicOverview.UI
 
             // Hook-up event
             _colorReader.FrameArrived += OnColorFrameArrived;
-        }
-
-        /// <summary>
-        /// Initialize Kinect Depth
-        /// </summary>
-        private void InitializeDepth()
-        {
-            if (_kinect == null) return;
-
-            // Get frame description for the color output
-            FrameDescription desc = _kinect.DepthFrameSource.FrameDescription;
-
-            // Get the framereader for Color
-            _depthReader = _kinect.DepthFrameSource.OpenReader();
-
-            // Allocate pixel array
-            _depthData = new ushort[desc.Width * desc.Height];
-            _depthPixels = new byte[desc.Width * desc.Height * _bytePerPixel];
-
-            // Create new WriteableBitmap
-            _depthBitmap = new WriteableBitmap(desc.Width, desc.Height, 96, 96, PixelFormats.Bgr32, null);
-
-            // Link WBMP to UI
-            DepthImage.Source = _depthBitmap;
-
-            // Hook-up event
-            _depthReader.FrameArrived += OnDepthFrameArrived;
-        }
-
-        /// <summary>
-        /// Initialize Kinect Infrared
-        /// </summary>
-        private void InitializeInfrared()
-        {
-            if (_kinect == null) return;
-
-            // Get frame description for the color output
-            FrameDescription desc = _kinect.InfraredFrameSource.FrameDescription;
-
-            // Get the framereader for Color
-            _infraReader = _kinect.InfraredFrameSource.OpenReader();
-
-            // Allocate pixel array
-            _infraData = new ushort[desc.Width * desc.Height];
-            _infraPixels = new byte[desc.Width * desc.Height * _bytePerPixel];
-
-            // Create new WriteableBitmap
-            _infraBitmap = new WriteableBitmap(desc.Width, desc.Height, 96, 96, PixelFormats.Bgr32, null);
-
-            // Link WBMP to UI
-            InfraredImage.Source = _infraBitmap;
-
-            // Hook-up event
-            _infraReader.FrameArrived += OnInfraredFrameArrived;
         }
 
         /// <summary>
@@ -566,7 +506,7 @@ namespace K4W.BasicOverview.UI
         private void StartRecording()
         {
             RecordText.Text = "Pause";
-            Record.Click = "OnPause";
+            //Record.Click = "OnPause";
         }
         #endregion UI Methods
     }
