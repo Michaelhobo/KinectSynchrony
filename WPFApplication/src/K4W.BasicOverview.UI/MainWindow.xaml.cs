@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Text;
+using System.IO;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Drawing;
-using System.Windows.Forms.OpenFileDialog;
+//using System.Drawing;
+using System.Windows.Forms;
 using Microsoft.Kinect;
 
 namespace K4W.BasicOverview.UI
@@ -88,6 +90,11 @@ namespace K4W.BasicOverview.UI
         /// </summary>
         private WriteableBitmap _infraBitmap = null;
 
+        private bool initialized = false;
+        private bool recording = false;
+
+        private string outfile = "";
+        private StreamWriter outstream;
 
         /// <summary>
         /// Default CTOR
@@ -97,7 +104,20 @@ namespace K4W.BasicOverview.UI
             InitializeComponent();
 
             // Initialize Kinect
-            InitializeKinect();
+            if (InitializeKinect())
+            {
+                
+
+                // Setup finished
+                Status.Text = "Ready";
+                RecordText.Text = "Record";
+                initialized = true;
+            }
+            else
+            {
+                Status.Text = "Could not find Kinect";
+                RecordText.Text = "Initialize Kinect";
+            }
 
             // Close Kinect when closing app
             Closing += OnClosing;
@@ -117,12 +137,12 @@ namespace K4W.BasicOverview.UI
         /// <summary>
         /// Initialize Kinect Sensor
         /// </summary>
-        private void InitializeKinect()
+        private bool InitializeKinect()
         {
             // Get first Kinect
             _kinect = KinectSensor.GetDefault();
 
-            if (_kinect == null) return;
+            if (_kinect == null) return false;
 
             // Open connection
             _kinect.Open();
@@ -132,6 +152,8 @@ namespace K4W.BasicOverview.UI
 
             // Initialize Body
             IntializeBody();
+
+            return true;
         }
 
         /// <summary>
@@ -373,6 +395,8 @@ namespace K4W.BasicOverview.UI
                     if (body.IsTracked)
                     {
                         DrawBody(body);
+                        UpdateBodyStats(body);
+                        RecordBodyData(body);
                     }
                 }
             }
@@ -475,8 +499,19 @@ namespace K4W.BasicOverview.UI
                     break;
             }
         }
-        #endregion FRAME PROCESSING
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private void RecordBodyData(Body body)
+        {
+            // write to file...
+            String data = "yea";
+            outstream.WriteLine(data);
+
+        }
+
+        #endregion FRAME PROCESSING
         #region UI Methods
         private void OnNA(object sender, RoutedEventArgs e)
         {
@@ -485,19 +520,37 @@ namespace K4W.BasicOverview.UI
 
         private void OnRecord(object sender, RoutedEventArgs e)
         {
-            StartRecording();
+            if (initialized)
+            {
+                if (recording)
+                {
+                    StopRecording();
+                }
+                else
+                {
+                    StartRecording();
+                }
+            }
+            else
+            {
+                if (InitializeKinect())
+                {
+                    Status.Text = "Ready";
+                    RecordText.Text = "Record";
+                    initialized = true;
+                }
+            }
+            
         }
 
         private void OnChooseDataFile(object sender, RoutedEventArgs e)
         {
-            //OpenFileDialog openFileDialog1 = new OpenFileDialog();
-        }
-        /// <summary>
-        /// Choose file to save data to
-        /// </summary>
-        private void ChangeDataFile(string filename)
-        {
-
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                DataFile.Text = openFileDialog1.FileName;
+                outfile = openFileDialog1.FileName;
+            }
         }
         
         /// <summary>
@@ -505,8 +558,38 @@ namespace K4W.BasicOverview.UI
         /// </summary>
         private void StartRecording()
         {
+            // toggle status bits and change UI elements
+            Status.Text = "Recording";
             RecordText.Text = "Pause";
-            //Record.Click = "OnPause";
+            recording = true;
+
+            // open file, initialize buffers, push data
+            outstream = new StreamWriter(outfile, true);
+            outstream.WriteLine("starting recording");
+        }
+
+        /// <summary>
+        /// Stop recording and change the record button to Record
+        /// </summary>
+        private void StopRecording()
+        {
+            // toggle status bits and change UI elements
+            Status.Text = "Paused";
+            RecordText.Text = "Record";
+            recording = false;
+
+            // close file
+            outstream.Close();
+
+        }
+
+        /// <summary>
+        /// Update body stats on the statistics panel.
+        /// </summary>
+        private void UpdateBodyStats(Body body)
+        {
+            // TrackingID, NumberofJoints...
+
         }
         #endregion UI Methods
     }

@@ -24,3 +24,7 @@ C:\Users\Michael\Documents\GitHub\KinectSynchrony\WPFApplication\src\K4W.BasicOv
 C:\Users\Michael\Documents\GitHub\KinectSynchrony\WPFApplication\src\K4W.BasicOverview.UI\obj\Debug\K4W.BasicOverview.UI.g.resources
 C:\Users\Michael\Documents\GitHub\KinectSynchrony\WPFApplication\src\K4W.BasicOverview.UI\obj\Debug\K4W.BasicOverview.UI.Properties.Resources.resources
 C:\Users\Michael\Documents\GitHub\KinectSynchrony\WPFApplication\src\K4W.BasicOverview.UI\obj\Debug\K4W.BasicOverview.UI.csproj.GenerateResource.Cache
+C:\Users\Michael\Documents\GitHub\KinectSynchrony\WPFApplication\src\K4W.BasicOverview.UI\bin\Debug\K4W.BasicOverview.UI.exe
+C:\Users\Michael\Documents\GitHub\KinectSynchrony\WPFApplication\src\K4W.BasicOverview.UI\bin\Debug\K4W.BasicOverview.UI.pdb
+C:\Users\Michael\Documents\GitHub\KinectSynchrony\WPFApplication\src\K4W.BasicOverview.UI\bin\Debug\Microsoft.Kinect.dll
+C:\Users\Michael\Documents\GitHub\KinectSynchrony\WPFApplication\src\K4W.BasicOverview.UI\bin\Debug\Microsoft.Kinect.xml
