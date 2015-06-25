@@ -90,11 +90,15 @@ namespace K4W.BasicOverview.UI
         /// </summary>
         private WriteableBitmap _infraBitmap = null;
 
+        int numjoints = 25;
+
         private bool initialized = false;
         private bool recording = false;
 
         private string outfile = "";
         private StreamWriter outstream;
+
+        private List<String> order = new List<String>();
 
         /// <summary>
         /// Default CTOR
@@ -103,11 +107,16 @@ namespace K4W.BasicOverview.UI
         {
             InitializeComponent();
 
+            // Set up output order
+            order.Add("Time");
+            for (int j = 0; j < numjoints; j++)
+            {
+                order.Add(Enum.GetName(typeof(Joint), j));
+            }
+
             // Initialize Kinect
             if (InitializeKinect())
             {
-                
-
                 // Setup finished
                 Status.Text = "Ready";
                 RecordText.Text = "Record";
@@ -395,8 +404,12 @@ namespace K4W.BasicOverview.UI
                     if (body.IsTracked)
                     {
                         DrawBody(body);
-                        UpdateBodyStats(body);
-                        RecordBodyData(body);
+                        if (recording)
+                        {
+                            UpdateBodyStats(body);
+                            RecordBodyData(body);
+                        }
+                        
                     }
                 }
             }
@@ -501,14 +514,55 @@ namespace K4W.BasicOverview.UI
         }
 
         /// <summary>
-        /// 
+        /// Record body data to selected file in csv format
         /// </summary>
         private void RecordBodyData(Body body)
         {
+            
             // write to file...
-            String data = "yea";
-            outstream.WriteLine(data);
+            List<String> data = new List<String>();
+            
+            
+            outstream.WriteLine(String.Join(",", data));
 
+        }
+
+        /// <summary>
+        /// Update Data string based on order
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FillData(List<String> data, int index, Body body)
+        {
+            if (order[index].Equals("Time"))
+            {
+                DateTime now = DateTime.Now;
+                data.Add(now.ToString(@"M/d/yyyy hh:mm:ss tt"));
+            }
+            else if (isJoint(index)) // is joint
+            {
+                if (true)//body.Joints.ContainsKey)
+                {
+                    //data.Add(body.Joints[Enum.Parse(typeof(Joint), order[index])]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Check if is joint
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private bool isJoint(int index)
+        {
+            for (int j = 0; j < numjoints; j++)
+            {
+                if (Enum.GetName(typeof(Joint), j).Equals(order[index]))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         #endregion FRAME PROCESSING
@@ -565,7 +619,7 @@ namespace K4W.BasicOverview.UI
 
             // open file, initialize buffers, push data
             outstream = new StreamWriter(outfile, true);
-            outstream.WriteLine("starting recording");
+            outstream.WriteLine(String.Join(",", order));
         }
 
         /// <summary>
