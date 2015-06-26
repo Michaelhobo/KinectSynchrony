@@ -111,7 +111,7 @@ namespace K4W.BasicOverview.UI
             order.Add("Time");
             for (int j = 0; j < numjoints; j++)
             {
-                order.Add(Enum.GetName(typeof(Joint), j));
+                order.Add("Joint:" + Enum.GetName(typeof(JointType), j));
             }
 
             // Initialize Kinect
@@ -521,48 +521,103 @@ namespace K4W.BasicOverview.UI
             
             // write to file...
             List<String> data = new List<String>();
-            
+            foreach (String item in order)
+            {
+                String typeDelimiterString = ":";
+                char[] typeDelimiter = typeDelimiterString.ToCharArray();
+                String[] splitItem = item.Split(typeDelimiter);
+                if (item.Equals("Time"))
+                {
+                    DateTime now = DateTime.Now;
+                    data.Add(now.ToString(@"M/d/yyyy hh:mm:ss tt"));
+                }
+                else if (splitItem[0].Equals("Joint"))
+                {
+                    JointType type = JointType.Head;
+                    switch (splitItem[1]) {
+                        case "Head":
+                            break;
+                        case "AnkleLeft":
+                            type = JointType.AnkleLeft;
+                            break;
+                        case "AnkleRight":
+                            type = JointType.AnkleRight;
+                            break;
+                        case "ElbowLeft":
+                            type = JointType.ElbowLeft;
+                            break;
+                        case "ElbowRight":
+                            type = JointType.ElbowRight;
+                            break;
+                        case "FootLeft":
+                            type = JointType.FootLeft;
+                            break;
+                        case "FootRight":
+                            type = JointType.FootRight;
+                            break;
+                        case "HandLeft":
+                            type = JointType.HandLeft;
+                            break;
+                        case "HandRight":
+                            type = JointType.HandRight;
+                            break;
+                        case "HandTipLeft":
+                            type = JointType.HandTipLeft;
+                            break;
+                        case "HandTipRight":
+                            type = JointType.HandTipRight;
+                            break;
+                        case "HipLeft":
+                            type = JointType.HipLeft;
+                            break;
+                        case "HipRight":
+                            type = JointType.HipRight;
+                            break;
+                        case "KneeLeft":
+                            type = JointType.KneeLeft;
+                            break;
+                        case "KneeRight":
+                            type = JointType.KneeRight;
+                            break;
+                        case "Neck":
+                            type = JointType.Neck;
+                            break;
+                        case "ShoulderLeft":
+                            type = JointType.ShoulderLeft;
+                            break;
+                        case "ShoulderRight":
+                            type = JointType.ShoulderRight;
+                            break;
+                        case "SpineBase":
+                            type = JointType.SpineBase;
+                            break;
+                        case "SpineMid":
+                            type = JointType.SpineMid;
+                            break;
+                        case "SpineShoulder":
+                            type = JointType.SpineShoulder;
+                            break;
+                        case "ThumbLeft":
+                            type = JointType.ThumbLeft;
+                            break;
+                        case "ThumbRight":
+                            type = JointType.ThumbRight;
+                            break;
+                        case "WristLeft":
+                            type = JointType.WristLeft;
+                            break;
+                        case "WristRight":
+                            type = JointType.WristRight;
+                            break;
+                        default:
+                            return;
+                    }
+                    data.Add(body.Joints[type].Position.X + "." + body.Joints[type].Position.Y + "." + body.Joints[type].Position.Z);
+                }
+            }
             
             outstream.WriteLine(String.Join(",", data));
 
-        }
-
-        /// <summary>
-        /// Update Data string based on order
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FillData(List<String> data, int index, Body body)
-        {
-            if (order[index].Equals("Time"))
-            {
-                DateTime now = DateTime.Now;
-                data.Add(now.ToString(@"M/d/yyyy hh:mm:ss tt"));
-            }
-            else if (isJoint(index)) // is joint
-            {
-                if (true)//body.Joints.ContainsKey)
-                {
-                    //data.Add(body.Joints[Enum.Parse(typeof(Joint), order[index])]);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Check if is joint
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private bool isJoint(int index)
-        {
-            for (int j = 0; j < numjoints; j++)
-            {
-                if (Enum.GetName(typeof(Joint), j).Equals(order[index]))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         #endregion FRAME PROCESSING
