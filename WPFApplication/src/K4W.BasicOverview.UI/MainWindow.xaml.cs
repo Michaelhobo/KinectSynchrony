@@ -667,14 +667,23 @@ namespace K4W.BasicOverview.UI
         /// </summary>
         private void StartRecording()
         {
-            // toggle status bits and change UI elements
-            Status.Text = "Recording";
-            RecordText.Text = "Pause";
-            recording = true;
+            if (outfile.Equals(""))
+            {
+                // Consider throwing an error or displaying the problem - blank file path
+            }
+            else
+            {
+                // toggle status bits and change UI elements
+                Status.Text = "Recording";
+                RecordText.Text = "Pause";
+                recording = true;
 
-            // open file, initialize buffers, push data
-            outstream = new StreamWriter(outfile, true);
-            outstream.WriteLine(String.Join(",", order));
+                // open file, initialize buffers, push data
+                outstream = new StreamWriter(outfile, true);
+                outstream.WriteLine(String.Join(",", order));
+            }
+
+
         }
 
         /// <summary>
